@@ -6,7 +6,7 @@
     <title>BULBA Clicker</title>
     <style>
         body {
-            background-color: #8B4513; /* Коричневый фон */
+            background: linear-gradient(135deg, #f4e7da, #c7b299); /* Красивый градиентный фон */
             color: white;
             font-family: Arial, sans-serif;
             text-align: center;
@@ -26,6 +26,9 @@
         #counter {
             font-size: 30px;
         }
+        h1 {
+            color: #4b2e83; /* Тёмно-фиолетовый для заголовка */
+        }
     </style>
 </head>
 <body>
@@ -38,7 +41,7 @@
 
         // Проверка, открыт ли сайт в Telegram Web App
         const isTelegram = () => {
-            return navigator.userAgent.includes("TelegramBot");
+            return window.Telegram.WebApp.init !== undefined;
         }
 
         // Обработчик кликов на бульбу
