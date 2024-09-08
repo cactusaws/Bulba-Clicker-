@@ -126,8 +126,24 @@
         const upgradeBtnEl = document.getElementById('upgrade-btn');
 
         // Проверка, открыт ли сайт в Telegram
-        if (!navigator.userAgent.includes('Telegram')) {
-            document.body.innerHTML = '<h1>Пожалуйста, откройте игру в Telegram.</h1>';
+        function isTelegram() {
+            return navigator.userAgent.includes('Telegram');
+        }
+
+        // Сохранение данных в localStorage
+        function saveData() {
+            localStorage.setItem('bulbaCount', bulbaCount);
+            localStorage.setItem('clickValue', clickValue);
+            localStorage.setItem('upgradeCost', upgradeCost);
+        }
+
+        // Загрузка данных из localStorage
+        function loadData() {
+            bulbaCount = parseInt(localStorage.getItem('bulbaCount')) || 0;
+            clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
+            upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 10;
+            updateTopPanel();
+            upgradeBtnEl.innerText = `Upgrade Click (Cost: ${upgradeCost} BULBA)`;
         }
 
         // Обновление верхней панели
@@ -139,6 +155,9 @@
         bulbaEl.onclick = function(event) {
             bulbaCount += clickValue;
             updateTopPanel();
+
+            // Сохранение данных после клика
+            saveData();
 
             // Создание партикла
             const particle = document.createElement('div');
@@ -157,7 +176,7 @@
             upgradeMenuEl.style.display = 'flex';
             bulbaEl.style.display = 'none';
             topPanelEl.style.display = 'none';
-            bottomPanelEl.style.display = 'none';
+            boostBtnEl.style.display = 'none';
         };
 
         // Обработчик улучшения
@@ -168,6 +187,9 @@
                 upgradeCost *= 2; // Увеличение стоимости улучшения в 2 раза
                 upgradeBtnEl.innerText = `Upgrade Click (Cost: ${upgradeCost} BULBA)`;
                 updateTopPanel();
+
+                // Сохранение данных после улучшения
+                saveData();
             }
         };
 
@@ -184,6 +206,14 @@
 
         // Создание ползущих объектов каждые 3 секунды
         setInterval(createCrawler, 3000);
+
+        // Загрузка данных при открытии страницы
+        loadData();
+
+        // Проверка среды и отображение игры или сообщения
+        if (!isTelegram()) {
+            document.body.innerHTML = '<h1>Пожалуйста, откройте игру в Telegram.</h1>';
+        }
 
     </script>
 </body>
