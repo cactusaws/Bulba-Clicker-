@@ -3,34 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кликер Игра</title>
+    <title>BULBA Clicker</title>
     <style>
         body {
+            background-color: #8B4513; /* Коричневый фон */
+            color: white;
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
-        .container {
-            margin-top: 50px;
-        }
-        .button {
-            padding: 20px;
-            font-size: 24px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
+        #bulba {
+            font-size: 100px;
             cursor: pointer;
+            margin-bottom: 20px;
+        }
+        #counter {
+            font-size: 30px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Добро пожаловать в игру Кликер!</h1>
-        <p>Нажимайте на кнопку, чтобы кликать на картошку!</p>
-        <button class="button" onclick="alert('Клик!')">Клик на картошку</button>
-    </div>
+    <h1>BULBA Clicker 🥔</h1>
+    <div id="bulba">🥔</div>
+    <div id="counter">BULBA: 0</div>
+
+    <script>
+        let bulbaCount = 0;
+
+        // Проверка, открыт ли сайт в Telegram Web App
+        const isTelegram = () => {
+            return navigator.userAgent.includes("TelegramBot");
+        }
+
+        // Обработчик кликов на бульбу
+        document.getElementById("bulba").onclick = function() {
+            if (!isTelegram()) {
+                alert("Пожалуйста, зайдите на сайт через Telegram.");
+                return;
+            }
+            bulbaCount++;
+            document.getElementById("counter").innerText = `BULBA: ${bulbaCount}`;
+        }
+
+        // Проверка при загрузке страницы
+        window.onload = function() {
+            if (!isTelegram()) {
+                document.body.innerHTML = "<h1>Пожалуйста, зайдите на сайт через Telegram.</h1>";
+            }
+        }
+    </script>
 </body>
 </html>
