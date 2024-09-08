@@ -6,10 +6,7 @@
     <title>BULBA Clicker</title>
     <style>
         body {
-            background: linear-gradient(135deg, #f4e7da, #c7b299); /* Красивый градиентный фон */
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
+            background: linear-gradient(135deg, #f4e7da, #c7b299); /* Градиентный фон */
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -17,49 +14,138 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            overflow: hidden;
         }
         #bulba {
-            font-size: 100px;
+            font-size: 150px;
             cursor: pointer;
-            margin-bottom: 20px;
+            position: absolute;
         }
-        #counter {
-            font-size: 30px;
+        .panel {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2); /* Прозрачная панель */
+            backdrop-filter: blur(10px); /* Эффект размытия для стиля Windows 11 */
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Стиль шрифта Windows */
         }
-        h1 {
-            color: #4b2e83; /* Тёмно-фиолетовый для заголовка */
+        #top-panel {
+            top: 0;
+        }
+        #bottom-panel {
+            bottom: 0;
+        }
+        #boost-btn {
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: #0078d4;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .particle {
+            position: absolute;
+            color: black;
+            font-size: 20px;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+        #upgrade-menu {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .upgrade-btn {
+            background-color: #0078d4;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <h1>BULBA Clicker 🥔</h1>
+    <div id="top-panel" class="panel">🥔 0</div>
     <div id="bulba">🥔</div>
-    <div id="counter">BULBA: 0</div>
+    <div id="bottom-panel" class="panel">
+        <button id="boost-btn">Boost</button>
+    </div>
+    <div id="upgrade-menu">
+        <button id="upgrade-btn" class="upgrade-btn">Upgrade Click (Cost: 10 BULBA)</button>
+    </div>
 
     <script>
         let bulbaCount = 0;
+        let clickValue = 1;
+        let upgradeCost = 10;
 
-        // Проверка, открыт ли сайт в Telegram Web App
-        const isTelegram = () => {
-            return window.Telegram.WebApp.init !== undefined;
+        const bulbaEl = document.getElementById('bulba');
+        const topPanelEl = document.getElementById('top-panel');
+        const boostBtnEl = document.getElementById('boost-btn');
+        const upgradeMenuEl = document.getElementById('upgrade-menu');
+        const upgradeBtnEl = document.getElementById('upgrade-btn');
+
+        // Обновление верхней панели
+        function updateTopPanel() {
+            topPanelEl.innerText = `🥔 ${bulbaCount}`;
         }
 
         // Обработчик кликов на бульбу
-        document.getElementById("bulba").onclick = function() {
-            if (!isTelegram()) {
-                alert("Пожалуйста, зайдите на сайт через Telegram.");
-                return;
-            }
-            bulbaCount++;
-            document.getElementById("counter").innerText = `BULBA: ${bulbaCount}`;
-        }
+        bulbaEl.onclick = function(event) {
+            bulbaCount += clickValue;
+            updateTopPanel();
 
-        // Проверка при загрузке страницы
-        window.onload = function() {
-            if (!isTelegram()) {
-                document.body.innerHTML = "<h1>Пожалуйста, зайдите на сайт через Telegram.</h1>";
+            // Создание партикла
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.innerText = `+${clickValue}`;
+            document.body.appendChild(particle);
+
+            // Установка позиции партикла и его удаление
+            particle.style.left = `${event.clientX}px`;
+            particle.style.top = `${event.clientY}px`;
+            setTimeout(() => particle.remove(), 1000);
+        };
+
+        // Обработчик нажатия на Boost
+        boostBtnEl.onclick = function() {
+            upgradeMenuEl.style.display = 'flex';
+            bulbaEl.style.display = 'none';
+            topPanelEl.style.display = 'none';
+            bottomPanelEl.style.display = 'none';
+        };
+
+        // Обработчик улучшения
+        upgradeBtnEl.onclick = function() {
+            if (bulbaCount >= upgradeCost) {
+                bulbaCount -= upgradeCost;
+                clickValue++;
+                upgradeCost *= 2; // Увеличение стоимости улучшения в 2 раза
+                upgradeBtnEl.innerText = `Upgrade Click (Cost: ${upgradeCost} BULBA)`;
+                updateTopPanel();
             }
-        }
+        };
     </script>
 </body>
 </html>
