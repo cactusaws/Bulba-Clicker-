@@ -6,7 +6,7 @@
     <title>BULBA Clicker</title>
     <style>
         body {
-            background: linear-gradient(135deg, #f4e7da, #c7b299); /* Градиентный фон */
+            background-color: #a0522d; /* Коричневый фон */
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -15,6 +15,7 @@
             align-items: center;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         #bulba {
             font-size: 150px;
@@ -32,7 +33,7 @@
             justify-content: center;
             align-items: center;
             font-size: 24px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Стиль шрифта Windows */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         #top-panel {
             top: 0;
@@ -44,7 +45,7 @@
             font-size: 18px;
             cursor: pointer;
             padding: 10px 20px;
-            background-color: #0078d4;
+            background-color: #d2691e; /* Цвет бульбы */
             color: white;
             border-radius: 8px;
             border: none;
@@ -65,7 +66,7 @@
             position: absolute;
             width: 100%;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.7); /* Прозрачность на фоне, без изменения панели */
             color: white;
             display: flex;
             flex-direction: column;
@@ -74,7 +75,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .upgrade-btn {
-            background-color: #0078d4;
+            background-color: #d2691e; /* Цвет бульбы */
             color: white;
             padding: 15px 30px;
             font-size: 20px;
@@ -82,6 +83,24 @@
             border-radius: 10px;
             cursor: pointer;
             border: none;
+        }
+        .crawler {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #8b4513; /* Цвет движущихся объектов */
+            border-radius: 50%;
+            animation: move 15s linear infinite;
+        }
+        @keyframes move {
+            0% {
+                top: -30px;
+                left: calc(100% * var(--start-pos));
+            }
+            100% {
+                top: calc(100vh + 30px);
+                left: calc(100% * var(--end-pos));
+            }
         }
     </style>
 </head>
@@ -105,6 +124,11 @@
         const boostBtnEl = document.getElementById('boost-btn');
         const upgradeMenuEl = document.getElementById('upgrade-menu');
         const upgradeBtnEl = document.getElementById('upgrade-btn');
+
+        // Проверка, открыт ли сайт в Telegram
+        if (!navigator.userAgent.includes('Telegram')) {
+            document.body.innerHTML = '<h1>Пожалуйста, откройте игру в Telegram.</h1>';
+        }
 
         // Обновление верхней панели
         function updateTopPanel() {
@@ -146,6 +170,21 @@
                 updateTopPanel();
             }
         };
+
+        // Функция для создания ползущих объектов
+        function createCrawler() {
+            const crawler = document.createElement('div');
+            crawler.className = 'crawler';
+            crawler.style.setProperty('--start-pos', Math.random());
+            crawler.style.setProperty('--end-pos', Math.random());
+            document.body.appendChild(crawler);
+
+            setTimeout(() => crawler.remove(), 15000); // Удалить после 15 секунд
+        }
+
+        // Создание ползущих объектов каждые 3 секунды
+        setInterval(createCrawler, 3000);
+
     </script>
 </body>
 </html>
